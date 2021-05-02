@@ -47,6 +47,13 @@ public class PathChooserPanel extends JPanel{
 
         int result = chooser.showDialog(null,fileChooserLabel);
         if (result == JFileChooser.APPROVE_OPTION) {
+        	if(LayoutConsts.EMPTY_DIR == true) {
+        		File file = chooser.getSelectedFile();
+        		if(isDirectoryEmpty(file)) {
+        			DialogUtils.showError(MessageString.DIRECTORY_EMPTY, true);
+        		}
+        	}
+          else
           pathText.setText(chooser.getSelectedFile().toString());
         }
       }
@@ -64,4 +71,8 @@ public class PathChooserPanel extends JPanel{
   private static String sanitizePath(String path) {
     return path.replaceAll("^\\s+", "");
   }
+  public static boolean isDirectoryEmpty(File directory) {  
+	    String[] files = directory.list();
+	    return files.length == 0;  
+	}
 }

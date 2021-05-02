@@ -39,7 +39,7 @@ public class MessageString {
   public static final String VERSION_EMPTY = "Version" + CANNOT_EMPTY_SUFFIX;
   public static final String DATA_PATH_EMPTY = "Data path" + CANNOT_EMPTY_SUFFIX;
   public static final String SAVE_PATH_EMPTY = "Save path" + CANNOT_EMPTY_SUFFIX;
-
+  public static final String DIRECTORY_EMPTY = "Directory" + CANNOT_EMPTY_SUFFIX;
   // Prompts
   public static final String OVERWRITE_DATA = "Data from a previous session detected. Delete existing data and download data from the Cloud Endpoint?";
   public static final String OVERWRITE_CSV = "This CSV has already been downloaded. Delete existing CSV and download data from the Cloud Endpoint?";

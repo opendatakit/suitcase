@@ -4,6 +4,9 @@ import org.opendatakit.suitcase.model.CloudEndpointInfo;
 import org.opendatakit.suitcase.utils.ButtonState;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import java.awt.*;
 
 public class IOPanel extends JPanel {
