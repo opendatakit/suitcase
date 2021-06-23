@@ -5,6 +5,9 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -22,7 +25,7 @@ import org.opendatakit.suitcase.net.UpdateTask;
 import org.opendatakit.sync.client.SyncClient;
 
 public class DownloadTaskTest extends TestCase{
-  
+
   CloudEndpointInfo cloudEndpointInfo = null;
   String serverUrl = null;
   String appId = null;
@@ -30,7 +33,7 @@ public class DownloadTaskTest extends TestCase{
   String userName = null;
   String password = null;
   String version = null;
-  
+
   @Override
   protected void setUp() throws MalformedURLException {
 //    serverUrl = "";
@@ -38,17 +41,17 @@ public class DownloadTaskTest extends TestCase{
 //    absolutePathOfTestFiles = "testfiles" + File.separator;
 //    userName = "";
 //    password = "";
-    
+
     serverUrl = System.getProperty("test.aggUrl");
     appId = System.getProperty("test.appId");
     absolutePathOfTestFiles = System.getProperty("test.absolutePathOfTestFiles");
     userName = System.getProperty("test.userName");
     password = System.getProperty("test.password");
     version = "2";
-    
+
     cloudEndpointInfo = new CloudEndpointInfo(serverUrl, appId, userName, password);
   }
-  
+
   public void testDownloadTaskWithEmptyTable_ExpectPass() {
     String csvFile = absolutePathOfTestFiles + "plot" + File.separator + "definition.csv";
     String savePath = absolutePathOfTestFiles + "downloadedData" + File.separator + "plot-output1";
@@ -60,13 +63,13 @@ public class DownloadTaskTest extends TestCase{
 
     try {
       sc = new SyncClient();
-      
+
       String cloud_endpoint_url = cloudEndpointInfo.getHostUrl();
       cloud_endpoint_url = cloud_endpoint_url.substring(0, cloud_endpoint_url.length()-1);
-      
+
       URL url = new URL(cloud_endpoint_url);
       String host = url.getHost();
-      
+
       sc.init(host, cloudEndpointInfo.getUserName(), cloudEndpointInfo.getPassword());
 
       JSONObject result = sc.createTableWithCSV(cloudEndpointInfo.getServerUrl(), cloudEndpointInfo.getAppId(),
@@ -85,52 +88,50 @@ public class DownloadTaskTest extends TestCase{
 
       // Make sure it is the same as the csv definition
       assertTrue(TestUtilities.checkThatTableDefAndCSVDefAreEqual(csvFile, tableDef));
-      
+
       LoginTask lTask = new LoginTask(cloudEndpointInfo, false);
       retCode = lTask.blockingExecute();
       assertEquals(retCode, SuitcaseSwingWorker.okCode);
-      
+
       // Check the entire file path
-      String fullSavePath = savePath + File.separator + appId + File.separator + 
+      String fullSavePath = savePath + File.separator + appId + File.separator +
           testTableId + File.separator + fileName;
-      
+
       // First delete any existing file
       File f = new File(fullSavePath);
       if(f.exists()) {
         f.delete();
       }
-
-      AttachmentManager attMgr = new AttachmentManager(cloudEndpointInfo, testTableId, savePath);
-      ODKCsv csv = new ODKCsv(attMgr, cloudEndpointInfo, testTableId);
+      List<String> tableIds = Collections.singletonList(testTableId);
       CsvConfig csvConfig = new CsvConfig(false, false,false);
-      
-      DownloadTask dTask = new DownloadTask(cloudEndpointInfo, csv, csvConfig, savePath, false);
+
+      DownloadTask dTask = new DownloadTask(cloudEndpointInfo, tableIds, csvConfig, savePath, false);
       retCode = dTask.blockingExecute();
       assertEquals(retCode, SuitcaseSwingWorker.okCode);
-      
+
       f = new File(savePath);
       assertTrue(f.exists());
-      
+
       File fullFilePath = new File(fullSavePath);
       assertTrue(fullFilePath.exists());
-      
+
       // Check that file has two rows
       FileInputStream in = new FileInputStream(fullFilePath);
       InputStreamReader inReader = new InputStreamReader(in);
       RFC4180CsvReader csvReader = new RFC4180CsvReader(inReader);
-      
+
       String[] lineIn;
       int numOfLines = 0;
       String rowId = null;
       while ((lineIn = csvReader.readNext()) != null) {
         rowId = lineIn[0];
-        
+
         numOfLines++;
       }
-      
+
       assertEquals(numOfLines, 1);
       assertEquals(rowId, "_id");
-      
+
       // Now delete the table
       sc.deleteTableDefinition(cloudEndpointInfo.getServerUrl(), cloudEndpointInfo.getAppId(), testTableId,
           tableSchemaETag);
@@ -151,7 +152,7 @@ public class DownloadTaskTest extends TestCase{
       }
     }
   }
-  
+
   public void testDownloadTaskAddWithNonEmptyTable_ExpectPass() {
     String csvFile = absolutePathOfTestFiles + "plot" + File.separator + "definition.csv";
     String dataPath = absolutePathOfTestFiles + "plot" + File.separator + "plot-add.csv";
@@ -164,13 +165,13 @@ public class DownloadTaskTest extends TestCase{
 
     try {
       sc = new SyncClient();
-      
+
       String cloud_endpoint_url = cloudEndpointInfo.getHostUrl();
       cloud_endpoint_url = cloud_endpoint_url.substring(0, cloud_endpoint_url.length()-1);
-      
+
       URL url = new URL(cloud_endpoint_url);
       String host = url.getHost();
-      
+
       sc.init(host, cloudEndpointInfo.getUserName(), cloudEndpointInfo.getPassword());
 
       LoginTask lTask = new LoginTask(cloudEndpointInfo, false);
@@ -193,7 +194,7 @@ public class DownloadTaskTest extends TestCase{
 
       // Make sure it is the same as the csv definition
       assertTrue(TestUtilities.checkThatTableDefAndCSVDefAreEqual(csvFile, tableDef));
-      
+
       UpdateTask updateTask = new UpdateTask(cloudEndpointInfo, dataPath, version, testTableId, null, false);
       retCode = updateTask.blockingExecute();
       assertEquals(retCode, SuitcaseSwingWorker.okCode);
@@ -209,9 +210,9 @@ public class DownloadTaskTest extends TestCase{
 
       // Now check that the row was created with the right rowId
       assertTrue(TestUtilities.checkThatRowHasId("12", jsonRow));
-      
+
       // Check the entire file path
-      String fullSavePath = savePath + File.separator + appId + File.separator + 
+      String fullSavePath = savePath + File.separator + appId + File.separator +
           testTableId + File.separator + fileName;
 
       // First delete any existing file
@@ -219,38 +220,37 @@ public class DownloadTaskTest extends TestCase{
       if(f.exists()) {
         f.delete();
       }
-      
-      AttachmentManager attMgr = new AttachmentManager(cloudEndpointInfo, testTableId, savePath);
-      ODKCsv csv = new ODKCsv(attMgr, cloudEndpointInfo, testTableId);
+
+      List<String> tableIds = Collections.singletonList(testTableId);
       CsvConfig csvConfig = new CsvConfig(false, false,false);
-      
-      DownloadTask dTask = new DownloadTask(cloudEndpointInfo, csv, csvConfig, savePath, false);
+
+      DownloadTask dTask = new DownloadTask(cloudEndpointInfo, tableIds, csvConfig, savePath, false);
       retCode = dTask.blockingExecute();
       assertEquals(retCode, SuitcaseSwingWorker.okCode);
-      
+
       f = new File(savePath);
       assertTrue(f.exists());
-      
+
       File fullFilePath = new File(fullSavePath);
       assertTrue(fullFilePath.exists());
-      
+
       // Check that file has two rows
       FileInputStream in = new FileInputStream(fullFilePath);
       InputStreamReader inReader = new InputStreamReader(in);
       RFC4180CsvReader csvReader = new RFC4180CsvReader(inReader);
-      
+
       String[] lineIn;
       int numOfLines = 0;
       String rowId = null;
       while ((lineIn = csvReader.readNext()) != null) {
         rowId = lineIn[0];
-        
+
         numOfLines++;
       }
-      
+
       assertEquals(numOfLines, 2);
       assertEquals(rowId, "12");
-      
+
       // Now delete the table
       sc.deleteTableDefinition(cloudEndpointInfo.getServerUrl(), cloudEndpointInfo.getAppId(), testTableId,
           tableSchemaETag);
@@ -269,7 +269,7 @@ public class DownloadTaskTest extends TestCase{
       }
     }
   }
-  
+
   public void testDownloadTaskAddWithNonEmptyTableFromGeneratedCSV_ExpectPass() {
     String csvFile = absolutePathOfTestFiles + "geotagger" + File.separator + "definition.csv";
     String dataPath = absolutePathOfTestFiles + "geotagger" + File.separator + "geotagger-add.csv";
@@ -282,13 +282,13 @@ public class DownloadTaskTest extends TestCase{
 
     try {
       sc = new SyncClient();
-      
+
       String cloud_endpoint_url = cloudEndpointInfo.getHostUrl();
       cloud_endpoint_url = cloud_endpoint_url.substring(0, cloud_endpoint_url.length()-1);
-      
+
       URL url = new URL(cloud_endpoint_url);
       String host = url.getHost();
-      
+
       sc.init(host, cloudEndpointInfo.getUserName(), cloudEndpointInfo.getPassword());
 
       LoginTask lTask = new LoginTask(cloudEndpointInfo, false);
@@ -311,7 +311,7 @@ public class DownloadTaskTest extends TestCase{
 
       // Make sure it is the same as the csv definition
       assertTrue(TestUtilities.checkThatTableDefAndCSVDefAreEqual(csvFile, tableDef));
-      
+
       UpdateTask updateTask = new UpdateTask(cloudEndpointInfo, dataPath, version, testTableId, null, false);
       retCode = updateTask.blockingExecute();
       assertEquals(retCode, SuitcaseSwingWorker.okCode);
@@ -327,9 +327,9 @@ public class DownloadTaskTest extends TestCase{
 
       // Now check that the row was created with the right rowId
       assertTrue(TestUtilities.checkThatRowHasId("uuid:9551714f-66fa-4f85-ac02-1cbe3a66a61a", jsonRow));
-      
+
       // Check the entire file path
-      String fullSavePath = savePath + File.separator + appId + File.separator + 
+      String fullSavePath = savePath + File.separator + appId + File.separator +
           testTableId + File.separator + fileName;
 
       // First delete any existing file
@@ -337,38 +337,37 @@ public class DownloadTaskTest extends TestCase{
       if(f.exists()) {
         f.delete();
       }
-      
-      AttachmentManager attMgr = new AttachmentManager(cloudEndpointInfo, testTableId, savePath);
-      ODKCsv csv = new ODKCsv(attMgr, cloudEndpointInfo, testTableId);
+
+      List<String> tableIds = Collections.singletonList(testTableId);
       CsvConfig csvConfig = new CsvConfig(false, false,false);
-      
-      DownloadTask dTask = new DownloadTask(cloudEndpointInfo, csv, csvConfig, savePath, false);
+
+      DownloadTask dTask = new DownloadTask(cloudEndpointInfo, tableIds, csvConfig, savePath, false);
       retCode = dTask.blockingExecute();
       assertEquals(retCode, SuitcaseSwingWorker.okCode);
-      
+
       f = new File(savePath);
       assertTrue(f.exists());
-      
+
       File fullFilePath = new File(fullSavePath);
       assertTrue(fullFilePath.exists());
-      
+
       // Check that file has two rows
       FileInputStream in = new FileInputStream(fullFilePath);
       InputStreamReader inReader = new InputStreamReader(in);
       RFC4180CsvReader csvReader = new RFC4180CsvReader(inReader);
-      
+
       String[] lineIn;
       int numOfLines = 0;
       String rowId = null;
       while ((lineIn = csvReader.readNext()) != null) {
         rowId = lineIn[0];
-        
+
         numOfLines++;
       }
-      
+
       assertEquals(numOfLines, 15);
       assertEquals(rowId, "uuid:9551714f-66fa-4f85-ac02-1cbe3a66a61a");
-      
+
       // Now delete the table
       sc.deleteTableDefinition(cloudEndpointInfo.getServerUrl(), cloudEndpointInfo.getAppId(), testTableId,
           tableSchemaETag);
@@ -387,7 +386,7 @@ public class DownloadTaskTest extends TestCase{
       }
     }
   }
-  
+
   public void testDownloadTaskAddWithNonEmptyTableFromGeneratedCSVAndGroups_ExpectPass() {
     String csvFile = absolutePathOfTestFiles + "geotagger" + File.separator + "definition.csv";
     String dataPath = absolutePathOfTestFiles + "geotagger" + File.separator + "geotagger-groups.csv";
@@ -400,13 +399,13 @@ public class DownloadTaskTest extends TestCase{
 
     try {
       sc = new SyncClient();
-      
+
       String cloud_endpoint_url = cloudEndpointInfo.getHostUrl();
       cloud_endpoint_url = cloud_endpoint_url.substring(0, cloud_endpoint_url.length()-1);
-      
+
       URL url = new URL(cloud_endpoint_url);
       String host = url.getHost();
-      
+
       sc.init(host, cloudEndpointInfo.getUserName(), cloudEndpointInfo.getPassword());
 
       LoginTask lTask = new LoginTask(cloudEndpointInfo, false);
@@ -429,7 +428,7 @@ public class DownloadTaskTest extends TestCase{
 
       // Make sure it is the same as the csv definition
       assertTrue(TestUtilities.checkThatTableDefAndCSVDefAreEqual(csvFile, tableDef));
-      
+
       UpdateTask updateTask = new UpdateTask(cloudEndpointInfo, dataPath, version, testTableId, null, false);
       retCode = updateTask.blockingExecute();
       assertEquals(retCode, SuitcaseSwingWorker.okCode);
@@ -442,9 +441,9 @@ public class DownloadTaskTest extends TestCase{
       assertEquals(rows.size(), 3);
 
       assertEquals(TestUtilities.verifyServerRowsMatchCSV(rows, dataPath), true);
-      
+
       // Check the entire file path
-      String fullSavePath = savePath + File.separator + appId + File.separator + 
+      String fullSavePath = savePath + File.separator + appId + File.separator +
           testTableId + File.separator + fileName;
 
       // First delete any existing file
@@ -452,30 +451,29 @@ public class DownloadTaskTest extends TestCase{
       if(f.exists()) {
         f.delete();
       }
-      
-      AttachmentManager attMgr = new AttachmentManager(cloudEndpointInfo, testTableId, savePath);
-      ODKCsv csv = new ODKCsv(attMgr, cloudEndpointInfo, testTableId);
+
+      List<String> tableIds = Collections.singletonList(testTableId);
       CsvConfig csvConfig = new CsvConfig(false, false,false);
-      
-      DownloadTask dTask = new DownloadTask(cloudEndpointInfo, csv, csvConfig, savePath, false);
+
+      DownloadTask dTask = new DownloadTask(cloudEndpointInfo, tableIds, csvConfig, savePath, false);
       retCode = dTask.blockingExecute();
       assertEquals(retCode, SuitcaseSwingWorker.okCode);
-      
+
       f = new File(savePath);
       assertTrue(f.exists());
-      
+
       File fullFilePath = new File(fullSavePath);
       assertTrue(fullFilePath.exists());
-      
+
       res = sc.getRowsSince(cloudEndpointInfo.getServerUrl(), cloudEndpointInfo.getAppId(), testTableId,
           tableSchemaETag, null, null, null);
 
       rows = res.getJSONArray("rows");
 
       assertEquals(rows.size(), 3);
-      
+
       assertEquals(TestUtilities.verifyServerRowsMatchCSV(rows, fullSavePath), true);
-      
+
       // Now delete the table
       sc.deleteTableDefinition(cloudEndpointInfo.getServerUrl(), cloudEndpointInfo.getAppId(), testTableId,
           tableSchemaETag);

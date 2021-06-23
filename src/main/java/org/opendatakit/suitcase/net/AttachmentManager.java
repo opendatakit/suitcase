@@ -157,15 +157,6 @@ public class AttachmentManager {
   }
 
   /**
-   * Overwrites the original save path
-   *
-   * @param path path
-   */
-  public void setSavePath(String path) {
-    this.savePath = path;
-  }
-
-  /**
    * Infers local path to attachment directory with rowId and cloudEndpointInfo info.
    *
    * @param rowId

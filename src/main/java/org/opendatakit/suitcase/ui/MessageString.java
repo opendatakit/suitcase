@@ -1,5 +1,7 @@
 package org.opendatakit.suitcase.ui;
 
+import java.util.List;
+
 public class MessageString {
   public static final String NEW_LINE = System.lineSeparator();
 
@@ -26,7 +28,6 @@ public class MessageString {
 
   // ... does not exist error
   private static final String NONEXISTENCE_SUFFIX = " does not exist";
-  public static final String BAD_TABLE_ID = TABLE_ID + NONEXISTENCE_SUFFIX;
   public static final String DATA_DIR_NOT_EXIST = "Data directory" + NONEXISTENCE_SUFFIX;
 
   // ... cannot be empty error
@@ -42,5 +43,25 @@ public class MessageString {
 
   // Prompts
   public static final String OVERWRITE_DATA = "Data from a previous session detected. Delete existing data and download data from the Cloud Endpoint?";
-  public static final String OVERWRITE_CSV = "This CSV has already been downloaded. Delete existing CSV and download data from the Cloud Endpoint?";
+
+  public static String getOverwriteCsvString(List<String> tableIds) {
+    String messagePrefix = "This CSV for table Id ";
+    String messageSuffix = " has already been downloaded. Delete existing CSV and download data from the Cloud Endpoint?";
+    StringBuilder message = new StringBuilder(messagePrefix);
+    for(int i=0;i<tableIds.size();i++){
+      message.append(tableIds.get(i));
+      if(i<tableIds.size()-2){
+        message.append(", ");
+      }
+      else if(i==tableIds.size()-2){
+        message.append(" and ");
+      }
+    }
+    message.append(messageSuffix);
+    return message.toString();
+  }
+
+  public static String getBadTableIdString(String tableId){
+    return TABLE_ID + " " + tableId + NONEXISTENCE_SUFFIX;
+  }
 }

@@ -5,6 +5,7 @@ import org.opendatakit.suitcase.net.UploadTask;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 import static org.opendatakit.suitcase.ui.MessageString.*;
 
@@ -45,16 +46,18 @@ public class FieldsValidatorUtils {
     return errorMsgBuilder.length() > 0 ? errorMsgBuilder.toString().trim() : null;
   }
 
-  public static String checkDownloadFields(String tableId, String savePath,
-      CloudEndpointInfo cloudEndpointInfo) {
+  public static String checkDownloadFields(List<String> tableIds, String savePath,
+                                           CloudEndpointInfo cloudEndpointInfo) {
     StringBuilder errorMsgBuilder = new StringBuilder();
 
-    if (tableId.isEmpty()) {
+    if (tableIds.isEmpty()) {
       errorMsgBuilder.append(TABLE_ID_EMPTY).append(NEW_LINE);
     }
 
-    if (!tableId.isEmpty() && !cloudEndpointInfo.tableIdExists(tableId)) {
-      errorMsgBuilder.append(BAD_TABLE_ID).append(NEW_LINE);
+    for(String tableId:tableIds) {
+      if (!cloudEndpointInfo.tableIdExists(tableId)) {
+        errorMsgBuilder.append(getBadTableIdString(tableId)).append(NEW_LINE);
+      }
     }
 
     if (savePath.isEmpty()) {

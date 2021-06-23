@@ -19,7 +19,17 @@ public class IOPanel extends JPanel {
 
     this.parent = parent;
 
-    JTabbedPane tabs = new JTabbedPane();
+    UIManager.put("TabbedPane.selected", LayoutConsts.BUTTON_BACKGROUND_COLOR);
+    JTabbedPane tabs = new JTabbedPane(){
+      public Color getForegroundAt(int index){
+        if(getSelectedIndex() == index){
+        return Color.WHITE;
+        }
+        else {
+          return Color.BLACK;
+        }
+      }
+    };
     pullPanel = new PullPanel(this);
     pushPanel = new PushPanel(this);
     tabs.addTab(PULL_TAB_LABEL, pullPanel);
@@ -34,17 +44,24 @@ public class IOPanel extends JPanel {
     this.add(splitPane, LayoutDefault.getDefaultGbc());
   }
 
-  public void setButtonsState(ButtonState pushButtonState, ButtonState pullButtonState, ButtonState resetButtonState, ButtonState refreshButtonState)
-  {
-    pushPanel.setButtonsState(pushButtonState,resetButtonState);
-    pullPanel.setButtonsState(pullButtonState,refreshButtonState);
+  public void disableAllButtons(){
+    pushPanel.setButtonsState(ButtonState.DISABLED,ButtonState.DISABLED);
+    pullPanel.setButtonsState(ButtonState.DISABLED,ButtonState.DISABLED,ButtonState.DISABLED,ButtonState.DISABLED,ButtonState.DISABLED);
   }
 
+  public void enableAllButtons(){
+    pushPanel.setButtonsState(ButtonState.ENABLED,ButtonState.ENABLED);
+    pullPanel.setButtonsState(ButtonState.ENABLED,ButtonState.ENABLED,ButtonState.ENABLED,ButtonState.ENABLED,ButtonState.ENABLED);
+  }
   public CloudEndpointInfo getCloudEndpointInfo() {
     return parent.getCloudEndpointInfo();
   }
 
   public SuitcaseProgressBar getProgressBar() {
     return parent.getProgressBar();
+  }
+
+  public PullPanel getPullPanel() {
+    return pullPanel;
   }
 }

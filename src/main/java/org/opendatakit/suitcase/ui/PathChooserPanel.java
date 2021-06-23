@@ -37,6 +37,8 @@ public class PathChooserPanel extends JPanel{
 
     this.browseBtn = new JButton();
     this.browseBtn.setText("...");
+    this.browseBtn.setBackground(LayoutConsts.BUTTON_BACKGROUND_COLOR);
+    this.browseBtn.setForeground(LayoutConsts.BUTTON_FOREGROUND_COLOR);
     this.browseBtn.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {

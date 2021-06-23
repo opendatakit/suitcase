@@ -22,7 +22,7 @@ public class InputPanel extends JPanel{
   }
 
   private void buildLabelPanel(String[] labels) {
-    JPanel labelPanel = new JPanel(new GridLayout(labels.length, 1));
+    JPanel labelPanel = new JPanel(new GridLayout(labels.length, 1,0,15));
     gbc.weightx = 1;
     this.add(labelPanel, gbc);
 
@@ -32,7 +32,7 @@ public class InputPanel extends JPanel{
   }
 
   private void buildTextPanel(JTextField[] textFields, String[] defaultText) {
-    JPanel inputPanel = new JPanel(new GridLayout(textFields.length, 1));
+    JPanel inputPanel = new JPanel(new GridLayout(textFields.length, 1,0,15));
     gbc.weightx = 9;
     this.add(inputPanel, gbc);
 
