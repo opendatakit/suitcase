@@ -29,7 +29,12 @@ public class ODKCsv implements Iterable<String[]> {
 
     @Override
     public String[] next() {
-      return next(new CsvConfig());
+      try {
+        return next(new CsvConfig());
+      } catch (ScanJsonException | IOException | JSONException e) {
+        e.printStackTrace();
+        return null;
+      }
     }
 
     @Override
@@ -37,18 +42,14 @@ public class ODKCsv implements Iterable<String[]> {
       throw new UnsupportedOperationException();
     }
 
-    public String[] next(CsvConfig config) {
+    public String[] next(CsvConfig config) throws ScanJsonException, IOException, JSONException {
       if (!hasNext()) {
         throw new NoSuchElementException();
       }
 
       String[] nextLine = null;
 
-      try {
-        nextLine = get(cursor++, config);
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
+      nextLine = get(cursor++, config);
 
       return nextLine;
     }
@@ -291,7 +292,7 @@ public class ODKCsv implements Iterable<String[]> {
    * @throws JSONException JSON processing error
    * @throws IOException Other IO error
    */
-  public String[] get(int rowIndex, CsvConfig config) throws JSONException, IOException {
+  public String[] get(int rowIndex, CsvConfig config) throws JSONException, IOException, ScanJsonException {
     if (rowIndex >= size) {
       throw new NoSuchElementException();
     }
@@ -474,7 +475,7 @@ public class ODKCsv implements Iterable<String[]> {
    * @throws IOException 
    * @throws JSONException 
    */
-  private String[] getData(JSONObject row, CsvConfig config) throws IOException, JSONException {
+  private String[] getData(JSONObject row, CsvConfig config) throws IOException, JSONException, ScanJsonException {
     String rowId = row.optString(ID_JSON);
 
     ScanJson scanRaw = null;
@@ -482,8 +483,14 @@ public class ODKCsv implements Iterable<String[]> {
       this.attMngr.getListOfRowAttachments(rowId);
 
       if (config.isScanFormatting()) {
-        this.attMngr.downloadAttachments(rowId, true);
-        scanRaw = new ScanJson(this.attMngr.getScanRawJsonStream(rowId));
+          try {
+              this.attMngr.downloadAttachments(rowId, true);
+              scanRaw = new ScanJson(this.attMngr.getScanRawJsonStream(rowId));
+          }
+          catch (JSONException e)
+          {
+             throw new ScanJsonException(e.getMessage(),e.getCause());
+          }
       }
     }
 

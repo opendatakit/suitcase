@@ -6,6 +6,7 @@ import org.opendatakit.suitcase.model.ODKCsv;
 import org.apache.wink.json4j.JSONException;
 import org.apache.wink.json4j.JSONObject;
 import org.opendatakit.aggregate.odktables.rest.RFC4180CsvWriter;
+import org.opendatakit.suitcase.model.ScanJsonException;
 import org.opendatakit.sync.client.SyncClient;
 import org.opendatakit.suitcase.ui.DialogUtils;
 import org.opendatakit.suitcase.ui.ProgressBarStatus;
@@ -42,7 +43,7 @@ public class DownloadTask extends SuitcaseSwingWorker<Void> {
   }
 
   @Override
-  protected Void doInBackground() throws IOException, JSONException {
+  protected Void doInBackground() throws IOException, JSONException, ScanJsonException {
     //assume csv has already been initialized by caller of this worker
 
     // check existing data, skip check for CLI
@@ -120,6 +121,8 @@ public class DownloadTask extends SuitcaseSwingWorker<Void> {
         errMsg = IO_WRITE_ERR;
       } else if (cause instanceof JSONException) {
         errMsg = VISIT_WEB_ERROR;
+      } else if (cause instanceof ScanJsonException) {
+        errMsg = SCAN_FORMATTING_ERROR;
       } else {
         errMsg = GENERIC_ERR;
       }

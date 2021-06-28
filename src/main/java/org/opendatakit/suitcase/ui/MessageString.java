@@ -16,6 +16,7 @@ public class MessageString {
   public static final String DATA_DIR_INVALID = "Data directory does not contain \"assets\" directory or \"tables\" directory.";
   public static final String INVALID_CSV = "Data directory contains invalid CSV.";
   public static final String VISIT_WEB_ERROR = "Please visit" + CLOUD_ENDPOINT + "web interface for error detail.";
+  public static final String SCAN_FORMATTING_ERROR = "Scan formatting is not possible for the selected table ID.";
 
   // unable to ... error
   private static final String UNABLE_PREFIX = "Unable to ";
