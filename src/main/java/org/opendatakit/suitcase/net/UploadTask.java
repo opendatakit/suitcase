@@ -12,7 +12,7 @@ import java.util.zip.DataFormatException;
 import static org.opendatakit.suitcase.ui.MessageString.*;
 
 public class UploadTask extends SuitcaseSwingWorker<Void> {
-  private static final String IN_PROGRESS_STRING = "Uploading...";
+  public static final String IN_PROGRESS_STRING = "Uploading...";
   private static final int PUSH_FINISH_WAIT = 5000;
 
   private CloudEndpointInfo cloudEndpointInfo;

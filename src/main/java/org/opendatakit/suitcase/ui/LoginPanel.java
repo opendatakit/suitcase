@@ -87,7 +87,12 @@ public class LoginPanel extends JPanel implements PropertyChangeListener {
     this.sPasswordText = new JPasswordField(1);
     this.sLoginButton = new JButton();
     this.sAnonLoginButton = new JButton();
-
+    this.sPasswordText.setName("password");
+    this.sCloudEndpointAddressText.setName("server_url");
+    this.sAppIdText.setName("app_id");
+    this.sUserNameText.setName("username");
+    this.sLoginButton.setName("login_button");
+    this.sAnonLoginButton.setName("anon_login_button");
     GridBagConstraints gbc = LayoutDefault.getDefaultGbc();
     gbc.gridx = 0;
     gbc.gridy = GridBagConstraints.RELATIVE;

@@ -31,6 +31,7 @@ public class PathChooserPanel extends JPanel{
 
     this.pathText = new JTextField(1);
     this.pathText.setText(defaultPath);
+    this.pathText.setName("path_text");
     this.pathText.setBorder(BorderFactory.createLineBorder(Color.BLACK));
     gbc.weightx = PATH_TEXT_WEIGHT;
     add(this.pathText, gbc);

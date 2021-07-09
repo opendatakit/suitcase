@@ -53,6 +53,7 @@ public class PullPanel extends JPanel implements PropertyChangeListener {
                 SAVE_PATH_LABEL,FILE_CHOOSER_LABEL ,FileUtils.getDefaultSavePath().toString()
         );
 
+        this.sTableIdText.setName("table_id_text");
         GridBagConstraints gbc = LayoutDefault.getDefaultGbc();
         gbc.gridx = 0;
         gbc.gridy = GridBagConstraints.RELATIVE;
@@ -95,6 +96,7 @@ public class PullPanel extends JPanel implements PropertyChangeListener {
                 worker.execute();
             }
         });
+        sPullButton.setName("download_button");
         sPullButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

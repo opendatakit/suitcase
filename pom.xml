@@ -15,6 +15,7 @@
         <org.apache.wink.version>1.4</org.apache.wink.version>
         <org.apache.commons.cli.version>1.4</org.apache.commons.cli.version>
         <org.apache.httpcomponents.version>4.5.13</org.apache.httpcomponents.version>
+        <org.apache.maven.plugins.surefire.version>2.22.0</org.apache.maven.plugins.surefire.version>
 
         <maven.jar.plugin.version>3.2.0</maven.jar.plugin.version>
         <maven.javadoc.plugin.version>3.2.0</maven.javadoc.plugin.version>
@@ -28,6 +29,10 @@
 
         <com.fasterxml.jackson.version>2.11.4</com.fasterxml.jackson.version>
         <com.fasterxml.jackson.databind.version>2.11.4</com.fasterxml.jackson.databind.version>
+        <com.github.caciocavallosilano.version>1.11</com.github.caciocavallosilano.version>
+        <org.assertj.junit.version>3.6.0</org.assertj.junit.version>
+        <org.assertj.aut.version>1.0.0-SNAPSHOT</org.assertj.aut.version>
+        <org.assertj.swing.version>1.0.0</org.assertj.swing.version>
 
         <mainClass>org.opendatakit.suitcase.Suitcase</mainClass>
         <sourceDir>src/main/java</sourceDir>
@@ -147,6 +152,13 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${org.apache.maven.plugins.surefire.version}</version>
+            </plugin>
+
         </plugins>
     </build>
 
@@ -212,5 +224,27 @@
             <version>${junit.version}</version> <!-- Or whatever JUnit you're using. -->
             <scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-swing-aut</artifactId>
+            <version>${org.assertj.aut.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-swing</artifactId>
+            <version>${org.assertj.swing.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-swing-junit</artifactId>
+            <version>${org.assertj.junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.caciocavallosilano</groupId>
+            <artifactId>cacio-tta</artifactId>
+            <version>${com.github.caciocavallosilano.version}</version>
+        </dependency>
     </dependencies>
 </project>
