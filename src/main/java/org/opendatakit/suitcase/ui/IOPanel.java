@@ -47,4 +47,9 @@ public class IOPanel extends JPanel {
   public SuitcaseProgressBar getProgressBar() {
     return parent.getProgressBar();
   }
+
+  public PullPanel getPullPanel() {
+    return pullPanel;
+  }
+
 }

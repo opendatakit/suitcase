@@ -11,6 +11,7 @@ public abstract class SuitcaseSwingWorker<T> extends SwingWorker<T, ProgressBarS
   public static final String INDETERMINATE_PROPERTY = "indeterminate";
   public static final String PROGRESS_PROPERTY = "progress"; // hardcoded in SwingWorker
   public static final String DONE_PROPERTY = "done";
+  public static final String LOGIN_ERROR_PROPERTY = "error";
   public static final int errorCode = 2;
   public static final int okCode = 0;
 
@@ -67,6 +68,10 @@ public abstract class SuitcaseSwingWorker<T> extends SwingWorker<T, ProgressBarS
 
   protected void setIndeterminate(Boolean indeterminate) {
     firePropertyChange(INDETERMINATE_PROPERTY, null, indeterminate);
+  }
+
+  protected void setError(String error){
+    firePropertyChange(LOGIN_ERROR_PROPERTY,null,error);
   }
 
   private void notifyDone() {

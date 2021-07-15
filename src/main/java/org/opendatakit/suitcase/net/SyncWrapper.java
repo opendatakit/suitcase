@@ -46,7 +46,7 @@ public class SyncWrapper {
     return InstanceHolder.INSTANCE;
   }
 
-  public void init(CloudEndpointInfo cloudEndpointInfo) throws IOException, JSONException {
+  public void init(CloudEndpointInfo cloudEndpointInfo) throws IOException {
     if (!hasInit) {
       this.cloudEndpointInfo = cloudEndpointInfo;
       this.sc = new SyncClient();
@@ -60,8 +60,6 @@ public class SyncWrapper {
       String host = url.getHost();
 
       this.sc.init(host, this.cloudEndpointInfo.getUserName(), this.cloudEndpointInfo.getPassword());
-      
-      updateTableList();
 
       hasInit = true;
     }
